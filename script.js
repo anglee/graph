@@ -67,6 +67,8 @@
         .append("line")
         .style("stroke", "#ccc")
         .style("stroke-width", 1);
+    edges.exit().remove();
+
     nodes = nodes.data(dataset.nodes);
     nodes.enter()
         .append("circle")
@@ -75,6 +77,7 @@
           return colors(i);
         })
         .call(force.drag);
+    nodes.exit().remove();
 
     force.start();
   };
@@ -83,7 +86,7 @@
     start();
   }, 0);
 
-  d3.select("#btn").on("click", function() {
+  d3.select("#add_btn").on("click", function() {
     dataset.nodes.push({
       name: "Ang"
     });
@@ -93,5 +96,16 @@
     });
     start();
   });
+  d3.select("#remove_btn").on("click", function() {
+    var removed = dataset.nodes.pop();
+    _.remove(dataset.edges, function(e) {
+      return e.source === removed
+          || e.target.source === removed;
+    });
+    start();
+  });
 
+  window.dataset = dataset;
+  window.nodes = nodes;
+  window.edges = edges;
 })();
